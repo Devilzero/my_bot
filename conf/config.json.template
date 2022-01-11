@@ -1,0 +1,13 @@
+{
+    "myqq_token": "yourtoken",
+    "myqq_http_ip": "127.0.0.1",
+    "myqq_http_port": "20001",
+
+    "j3bot_ip": "0.0.0.0",
+    "j3bot_port": "20002",
+
+    "mongdb_ip": "127.0.0.1",
+    "mongodb_port": "27017",
+    "mongodb_username": "admin",
+    "mongodb_password": "pwd"
+}
