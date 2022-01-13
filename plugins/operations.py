@@ -24,7 +24,8 @@ def get_hw_info():
     up_speed = now.bytes_sent - before.bytes_sent
     down_speed = now.bytes_recv - before.bytes_recv
 
-    msg = f"{platform.platform()}\n"\
+    msg = f"{platform.system()}\n"\
+          f"{platform.version()}\n"\
           f"{platform.processor()}\n"\
           f"CPU: {cpu_percent}%\n"\
           f"内存: {bytes2human(mem.used)} / {bytes2human(mem.total)} ({mem.percent}%)\n"
