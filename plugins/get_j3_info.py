@@ -22,7 +22,7 @@ def get_server(group_id):
 
 def get_j3_info(api, data):
     url = base_url + api
-    req = requests.post(url=url, data=data, verify=False)
+    req = requests.post(url=url, data=data)
     if req.status_code == 200:
         return req.json()
 

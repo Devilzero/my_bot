@@ -29,11 +29,13 @@ def msg_manager(message):
             from_msg = data_json['data']['messageChain'][1]['text']
             print(f"<- {from_group_name}({form_group_id}) - {from_name}({from_qq}): {from_msg}")
             from_msg = dispatch_msg(from_msg, form_group_id, from_qq)
-            if isinstance(from_msg, str) == 1:
-                msg, message_type = from_msg, "TEXT"
-            elif isinstance(from_msg, tuple):
-                msg, message_type = from_msg
-            mirai.send_group_message(form_group_id, msg, message_type, from_qq)
+            message_type = "TEXT"
+            if from_msg:
+                if isinstance(from_msg, str) == 1:
+                    msg = from_msg
+                elif isinstance(from_msg, tuple):
+                    msg, message_type = from_msg
+                mirai.send_group_message(form_group_id, msg, message_type, from_qq)
     elif data_json['data']['type'] == 'FriendMessage':
         # 好友
         if data_json['data']['messageChain'][1]['type'] == 'Plain':
