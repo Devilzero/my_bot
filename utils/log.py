@@ -32,8 +32,8 @@ class Log():
         if self.cur_sys == "Windows":
             log_msg = f"[{now_time}][{str(level).upper()}] - {msg}\n"
         elif self.cur_sys == "Linux":
-            log_msg = f"[{now_time}][\033[{self.color.get(level, '36')}m{str(level).upper()}\033[0m] - {msg}"
-        print(log_msg)
+            log_msg = f"[{now_time}][\033[{self.color.get(level, '36')}m{str(level).upper()}\033[0m] - {msg}\n"
+        print(log_msg, end="")
         with open(all_log_file, "a", encoding="utf-8") as all_log,\
              open(log_file, "a", encoding="utf-8") as sub_log:
             all_log.write(log_msg)
