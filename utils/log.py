@@ -1,5 +1,6 @@
 import os
 import time
+from platform import system
 
 class Log():
     def __init__(self) -> None:
@@ -10,6 +11,7 @@ class Log():
             "wring": "33",
             "error": "31"
         }
+        self.cur_sys = system()
 
     def write_log(self, msg, level="info"):
         now_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -27,8 +29,11 @@ class Log():
             log_file = os.path.join(message_log_dir, f"{level}.log")
 
 
-        log_msg = f"[{now_time}][{str(level).upper()}] - {msg}\n"
-        print(f"[{now_time}][\033[{self.color.get(level, '36')}m{str(level).upper()}\033[0m] - {msg}")
+        if self.cur_sys == "Windows":
+            log_msg = f"[{now_time}][{str(level).upper()}] - {msg}\n"
+        elif self.cur_sys == "Linux":
+            log_msg = f"[{now_time}][\033[{self.color.get(level, '36')}m{str(level).upper()}\033[0m] - {msg}"
+        print(log_msg)
         with open(all_log_file, "a", encoding="utf-8") as all_log,\
              open(log_file, "a", encoding="utf-8") as sub_log:
             all_log.write(log_msg)
