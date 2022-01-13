@@ -40,6 +40,7 @@ def get_daily(group_id, server=""):
         server = get_server(group_id)
     if not server:
         mirai.send_group_message(group_id, "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子")
+        return
     data = {
         "server": server
     }
@@ -60,6 +61,7 @@ def get_check(group_id, server=""):
         server = get_server(group_id)
     if not server:
         mirai.send_group_message(group_id, "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子")
+        return
     data = {
         "server": server,
     }
