@@ -2,6 +2,7 @@ import os
 import requests
 
 from pymongo import MongoClient
+from utils.mirai_api import mirai
 
 mg_ip = os.getenv("mongdb_ip")
 mg_port = os.getenv("mongodb_port")
@@ -31,14 +32,14 @@ def bind_server(group_id, server):
     with client:
         db = client.group
         db.config.update_one({'_id': group_id}, {'$set': {"server": server}}, True)
-    return "修改完成！"
+    mirai.send_group_message(group_id, "修改完成！")
 
 
 def get_daily(group_id, server=""):
     if not server:
         server = get_server(group_id)
     if not server:
-        return "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子"
+        mirai.send_group_message("请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子")
     data = {
         "server": server
     }
@@ -52,13 +53,13 @@ def get_daily(group_id, server=""):
 十人：{weekTeam}
 公共：{weekPublic}""".format_map(req_json["data"])
 
-    return msgInfo
+    mirai.send_group_message(group_id, msgInfo)
 
 def get_check(group_id, server=""):
     if not server:
         server = get_server(group_id)
     if not server:
-        return "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子"
+        mirai.send_group_message(group_id, "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子")
     data = {
         "server": server,
     }
@@ -70,9 +71,9 @@ def get_check(group_id, server=""):
     else:
         msgInfo = f"【{server}】还没开服"
 
-    return msgInfo
+    mirai.send_group_message(group_id, msgInfo)
 
-def get_macro(xinfa):
+def get_macro(group_id, xinfa):
     data = {
         "name": xinfa
     }
@@ -86,7 +87,7 @@ def get_macro(xinfa):
 
 更新时间：{time}
 """.format_map(req_json['data'])
-    return msgInfo
+    mirai.send_group_message(group_id, msgInfo)
 
 daily_head_list = ["日常"]
 bind_head_list = ["绑定区服", "设置区服", "修改区服"]
@@ -95,25 +96,28 @@ macro_head_list = ["宏"]
 
 cmd_head_list = [*daily_head_list, *bind_head_list, *check_head_list, *macro_head_list]
 
-def mk_msg(rev_list, group_id, qq, name):
+def mk_msg(data_json):
+    form_group_id = data_json['data']['sender']['group']['id']
+    from_msg = data_json['data']['messageChain'][1]['text']
+    rev_list = from_msg.split()
 
     if rev_list[0] in daily_head_list:
         if len(rev_list) < 2:
             server = ""
         else:
             server = rev_list[1]
-        return get_daily(group_id, server)
+        get_daily(form_group_id, server)
 
     if rev_list[0] in bind_head_list:
         if len(rev_list) < 2:
-            return "请输入区服\n例如：绑定区服 破阵子"
+            mirai.send_group_message(form_group_id, "请输入区服\n例如：绑定区服 破阵子")
         else:
             server = rev_list[1]
-            return bind_server(group_id, server)
+            bind_server(form_group_id, server)
 
     if rev_list[0] in check_head_list:
-        return get_check(group_id)
+        get_check(form_group_id)
 
     if rev_list[0] in macro_head_list:
         xinfa = rev_list[1]
-        return get_macro(xinfa)
+        get_macro(form_group_id, xinfa)

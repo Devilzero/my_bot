@@ -1,7 +1,10 @@
 import os
 import requests
 
+from utils.log import log
+
 img_dir = os.path.realpath(__file__+"/../../data/img/")
+print(img_dir)
 
 
 class Mirai(object):
@@ -26,7 +29,7 @@ class Mirai(object):
         res = requests.get(url=url)
         json_data = res.json()
         if json_data['data']['version']:
-            print(f"当前版本：{json_data['data']['version']}")
+            log.info(f"当前版本：{json_data['data']['version']}")
         else:
             raise SystemExit('版本获取失败！')
 
@@ -39,7 +42,7 @@ class Mirai(object):
         res = requests.post(url=url, json=request_data)
         json_data = res.json()
         if json_data['code'] == 0:
-            print('验证成功！')
+            log.info('验证成功！')
             self.session = json_data['session']
             return 0
         else:
@@ -58,13 +61,13 @@ class Mirai(object):
         res = requests.post(url=url, json=request_data)
         json_data = res.json()
         if json_data['code'] == 0:
-            print('QQ绑定成功！')
+            log.info(f'[{self.qq}] 绑定成功！')
         else:
             raise SystemExit('QQ绑定失败！')
 
     def release(self):
         """
-        清楚当前sesson
+        清除当前sesson
         """
         request_data = {
             'sessionKey': self.session,
@@ -74,7 +77,7 @@ class Mirai(object):
         res = requests.post(url=url, json=request_data)
         json_data = res.json()
         if json_data['code'] == 0:
-            print('清除成功！')
+            log.info('清除成功！')
         else:
             raise SystemExit('清除失败！')
 
@@ -85,7 +88,7 @@ class Mirai(object):
         }
         url = self.url+'/config'
         requests.post(url=url, json=request_data)
-        print('WebSocketStarted!')
+        log.info('WebSocket启动成功!')
 
     def accept_new_friend(self, event_id, from_id, group_id, message, name):
         request_data = {
@@ -100,16 +103,16 @@ class Mirai(object):
         res = requests.post(url=url, json=request_data)
         json_data = res.json()
         if json_data['code'] != 0:
-            print("get error {} when send message".format(json_data['code']))
+            log.error(f"链接访问失败: [{url}] <{json_data['code']}>")
         else:
-            print("got new friend request from {} with QQ:{}".format(from_id, name))
+            log.error(f"获取新好友 {name}(from_id)".format(from_id, name))
 
-    def send_group_message(self, target, msg: str, message_type="TEXT", ATQQ=None):
+    def send_group_message(self, target, msg: str, message_type="TXT", ATQQ=None):
         """
         向某群(target)发送消息(msg)
         target: 群号
         msg: 发送的内容
-        message_type: 消息类型(TEXT、IMG)
+        message_type: 消息类型(TXT、IMG)
         needAT: 是否需要@对方
         ATQQ: @ATQQ, 留空则不@
         """
@@ -119,11 +122,12 @@ class Mirai(object):
             chain.append(temp)
             temp = {"type": "Plain", "text": " "}
             chain.append(temp)
-        if message_type == "TEXT":
+        if message_type == "TXT":
             temp = {"type": "Plain", "text": msg}
             chain.append(temp)
         elif message_type == "IMG":
             img_path = os.path.join(img_dir, msg)
+            print(img_path)
             temp = {"type": "Image", "path": img_path}
             chain.append(temp)
         request_data = {
@@ -137,21 +141,21 @@ class Mirai(object):
         try:
             json_data = res.json()
             if json_data['code'] != 0:
-                print(f"消息发送失败: {json_data['code']}")
+                log.error(f"链接访问失败: [{url}] <{json_data['code']}>")
         except:
-            print(f"链接异常: {res.text}")
-        print(f"-> [{target}]: {msg}")
+            log.error(f"链接异常: {res.text}")
+        log.write_log(f"-> [{target}]: {msg}", target)
 
-    def send_temp_message(self, target, QQ, msg: str, message_type="TEXT"):
+    def send_temp_message(self, target, QQ, msg: str, message_type="TXT"):
         """
         向某群(target)中的某人(QQ)发起临时消息(msg)
         target: 群号
         QQ: 消息接收人的QQ
         msg: 发送的内容
-        message_type: 消息类型（TEXT、IMG）
+        message_type: 消息类型（TXT、IMG）
         """
         chain = []
-        if message_type == "TEXT":
+        if message_type == "TXT":
             temp = {"type": "Plain", "text": msg}
             chain.append(temp)
         elif message_type == "IMG":
@@ -170,30 +174,26 @@ class Mirai(object):
         try:
             json_data = res.json()
             if json_data['code'] != 0:
-                print(f"消息发送失败: {json_data['code']}")
+                log.error(f"链接访问失败: [{url}] <{json_data['code']}>")
         except:
-            print(f"链接异常: {res.text}")
-        print(f"**-> [{target} - {QQ}]: {msg}")
+            log.error(f"链接异常: {res.text}")
+        log.write_log(f"**-> [{target} - {QQ}]: {msg}", "UserMsg")
 
     def get_group_member_list(self, target):
         """
         获取群成员列表
         target: 群号
         """
-        # request_data = {
-        #     "sessionKey": self.session,
-        #     "target": target
-        # }
         url = self.url + f'/memberList?sessionKey={self.session}&target={target}'
         res = requests.get(url=url)
 
         try:
             json_data = res.json()
             if json_data['code'] != 0:
-                print(f"获取群成员列表失败: {json_data['code']}")
+                log.error(f"链接访问失败: [{url}] <{json_data['code']}>")
             return json_data["data"]
         except:
-            print(f"链接异常: {res.text}")
+            log.error(f"链接异常: {res.text}")
 
 
 qq = os.getenv("mirai_qq")
