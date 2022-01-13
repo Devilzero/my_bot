@@ -1,5 +1,4 @@
 import os
-import time
 import requests
 
 from pymongo import MongoClient
@@ -23,8 +22,7 @@ def get_server(group_id):
 
 def get_j3_info(api, data):
     url = base_url + api
-
-    req = requests.post(url=url, data=data)
+    req = requests.post(url=url, data=data, verify=False)
     if req.status_code == 200:
         return req.json()
 
@@ -33,19 +31,18 @@ def bind_server(group_id, server):
     with client:
         db = client.group
         db.config.update_one({'_id': group_id}, {'$set': {"server": server}}, True)
-    return "Api_SendMsg", "修改完成！"
+    return "修改完成！"
 
 
 def get_daily(group_id, server=""):
     if not server:
         server = get_server(group_id)
     if not server:
-        return "Api_SendMsg", "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子"
+        return "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子"
     data = {
         "server": server
     }
     req_json = get_j3_info("daily", data)
-    print(req_json)
     msgInfo = """
 阵营：{dayCamp}
 战场：{dayBattle}
@@ -55,13 +52,13 @@ def get_daily(group_id, server=""):
 十人：{weekTeam}
 公共：{weekPublic}""".format_map(req_json["data"])
 
-    return "Api_SendMsg", msgInfo
+    return msgInfo
 
 def get_check(group_id, server=""):
     if not server:
         server = get_server(group_id)
     if not server:
-        return "Api_SendMsg", "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子"
+        return "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子"
     data = {
         "server": server,
     }
@@ -73,7 +70,7 @@ def get_check(group_id, server=""):
     else:
         msgInfo = f"【{server}】还没开服"
 
-    return "Api_SendMsg", msgInfo
+    return msgInfo
 
 def get_macro(name):
     data = {
@@ -89,29 +86,34 @@ def get_macro(name):
 
 更新时间：{time}
 """.format_map(req_json['data'])
-    return "Api_SendMsg", msgInfo
+    return msgInfo
 
-def mk_msg(recMsg, group_id):
-    rev_list = recMsg.split("+")
-        # 触发菜单指令
+daily_head_list = ["日常"]
+bind_head_list = ["绑定区服", "设置区服", "修改区服"]
+check_head_list = ["开服"]
+macro_head_list = ["宏"]
 
-    if rev_list[0] == '日常':
+cmd_head_list = [*daily_head_list, *bind_head_list, *check_head_list, *macro_head_list]
+
+def mk_msg(rev_list, group_id, qq):
+
+    if rev_list[0] in daily_head_list:
         if len(rev_list) < 2:
             server = ""
         else:
             server = rev_list[1]
         return get_daily(group_id, server)
 
-    if rev_list[0] in ["绑定区服", "设置区服", "修改区服"]:
+    if rev_list[0] in bind_head_list:
         if len(rev_list) < 2:
             return "请输入区服\n例如：绑定区服 破阵子"
         else:
             server = rev_list[1]
             return bind_server(group_id, server)
 
-    if rev_list[0] in ["开服"]:
+    if rev_list[0] in check_head_list:
         return get_check(group_id)
 
-    if rev_list[0] in ["宏"]:
+    if rev_list[0] in macro_head_list:
         name = rev_list[1]
         return get_macro(name)
