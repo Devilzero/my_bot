@@ -15,11 +15,11 @@ base_url = "https://www.jx3api.com/app/"
 def get_server(group_id):
     client = MongoClient(f'mongodb://{mg_ip}:{mg_port}/', username=mg_usr, password=mg_pwd)
     with client:
-        db = client.group
-        config = db.config.find_one({"_id": group_id})
-        if not(config and config.get("server")):
+        db = client.my_bot
+        group_conf = db.group_conf.find_one({"_id": group_id})
+        if not(group_conf and group_conf.get("server")):
             return False
-        return config.get("server")
+        return group_conf.get("server")
 
 def get_j3_info(api, data):
     url = base_url + api
@@ -30,8 +30,8 @@ def get_j3_info(api, data):
 def bind_server(group_id, server):
     client = MongoClient(f'mongodb://{mg_ip}:{mg_port}/', username=mg_usr, password=mg_pwd)
     with client:
-        db = client.group
-        db.config.update_one({'_id': group_id}, {'$set': {"server": server}}, True)
+        db = client.my_bot
+        db.group_conf.update_one({'_id': group_id}, {'$set': {"server": server}}, True)
     mirai.send_group_message(group_id, "修改完成！")
 
 
