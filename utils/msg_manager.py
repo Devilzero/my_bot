@@ -35,7 +35,7 @@ def msg_manager(message):
                     msg = from_msg
                 elif isinstance(from_msg, tuple):
                     msg, message_type = from_msg
-                mirai.send_group_message(form_group_id, msg, message_type, from_qq)
+                mirai.send_group_message(form_group_id, msg, message_type)
     elif data_json['data']['type'] == 'FriendMessage':
         # 好友
         if data_json['data']['messageChain'][1]['type'] == 'Plain':

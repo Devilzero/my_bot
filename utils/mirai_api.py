@@ -180,18 +180,18 @@ class Mirai(object):
         获取群成员列表
         target: 群号
         """
-        request_data = {
-            "sessionKey": self.session,
-            "target": target
-        }
-        url = self.url + '/memberList'
-        res = requests.post(url=url, json=request_data)
+        # request_data = {
+        #     "sessionKey": self.session,
+        #     "target": target
+        # }
+        url = self.url + f'/memberList?sessionKey={self.session}&target={target}'
+        res = requests.get(url=url)
 
         try:
             json_data = res.json()
             if json_data['code'] != 0:
                 print(f"获取群成员列表失败: {json_data['code']}")
-            return json_data[0]
+            return json_data["data"]
         except:
             print(f"链接异常: {res.text}")
 
