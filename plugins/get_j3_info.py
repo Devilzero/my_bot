@@ -72,9 +72,9 @@ def get_check(group_id, server=""):
 
     return msgInfo
 
-def get_macro(name):
+def get_macro(xinfa):
     data = {
-        "name": name
+        "name": xinfa
     }
     req_json = get_j3_info("macro", data)
     msgInfo = """
@@ -95,7 +95,7 @@ macro_head_list = ["宏"]
 
 cmd_head_list = [*daily_head_list, *bind_head_list, *check_head_list, *macro_head_list]
 
-def mk_msg(rev_list, group_id, qq):
+def mk_msg(rev_list, group_id, qq, name):
 
     if rev_list[0] in daily_head_list:
         if len(rev_list) < 2:
@@ -115,5 +115,5 @@ def mk_msg(rev_list, group_id, qq):
         return get_check(group_id)
 
     if rev_list[0] in macro_head_list:
-        name = rev_list[1]
-        return get_macro(name)
+        xinfa = rev_list[1]
+        return get_macro(xinfa)

@@ -7,14 +7,14 @@ plugins_dir = os.path.realpath(__file__+"/../../plugins/")
 sys.path.append(os.path.realpath(__file__+"/../../plugins/"))
 
 
-def dispatch_msg(msg, group_id="", qq=""):
+def dispatch_msg(msg, group_id="", qq="", name=""):
     rev_list = msg.split()
     for i in os.listdir(plugins_dir):
         if i.endswith(".py"):
             plugin_name = i.split(".")[0]
             plugin = __import__(f"{plugin_name}")
             if rev_list[0] in plugin.cmd_head_list:
-                return plugin.mk_msg(rev_list, group_id, qq)
+                return plugin.mk_msg(rev_list, group_id, qq, name)
 
 
 def msg_manager(message):
@@ -28,7 +28,7 @@ def msg_manager(message):
             from_group_name =data_json['data']['sender']['group']['name']
             from_msg = data_json['data']['messageChain'][1]['text']
             print(f"<- {from_group_name}({form_group_id}) - {from_name}({from_qq}): {from_msg}")
-            from_msg = dispatch_msg(from_msg, form_group_id, from_qq)
+            from_msg = dispatch_msg(from_msg, form_group_id, from_qq, from_name)
             message_type = "TEXT"
             if from_msg:
                 if isinstance(from_msg, str) == 1:

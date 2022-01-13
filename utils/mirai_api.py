@@ -175,6 +175,26 @@ class Mirai(object):
             print(f"链接异常: {res.text}")
         print(f"**-> [{target} - {QQ}]: {msg}")
 
+    def get_group_member_list(self, target):
+        """
+        获取群成员列表
+        target: 群号
+        """
+        request_data = {
+            "sessionKey": self.session,
+            "target": target
+        }
+        url = self.url + '/memberList'
+        res = requests.post(url=url, json=request_data)
+
+        try:
+            json_data = res.json()
+            if json_data['code'] != 0:
+                print(f"获取群成员列表失败: {json_data['code']}")
+            return json_data[0]
+        except:
+            print(f"链接异常: {res.text}")
+
 
 qq = os.getenv("mirai_qq")
 key = os.getenv("mirai_key")
