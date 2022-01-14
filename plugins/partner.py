@@ -67,15 +67,14 @@ def mk_msg(data_json):
         # 查询等待时间
         partner_time = get_shafttime_axis(from_qq, "partner_time")
         if partner_time:
-            wait_time = (datetime.datetime.utcnow() - partner_time).total_seconds()
+            wait_time = (datetime.datetime.now() - partner_time).total_seconds()
             if wait_time < 180:
                 r_s = 180 - wait_time
-                msg = f"3分钟只能求一次情缘！{r_s} 秒后再来吧！"
-                mirai.send_group_message(form_group_id, msg, "TXT", ATQQ=from_name)
+                mirai.send_group_message(form_group_id, f"3分钟只能求一次情缘！{int(r_s)} 秒后再来吧！", "TXT", ATQQ=from_qq)
                 return
         # 正式求情缘
         mirai.send_group_message(form_group_id, f"【{from_name}】向你求情缘了，如果对方回复“接受情缘”并@【{from_name}】，你们就可以绑定情缘了！", "TXT", ATQQ=target_qq)
-        cur_time =  datetime.datetime.utcnow()
+        cur_time =  datetime.datetime.now()
         update_shafttime_axis(from_qq, {"partner_time": cur_time})
         # 加入请求列表
         target_wait_list = get_shafttime_axis(target_qq, "partner_wait")
@@ -104,7 +103,7 @@ def mk_msg(data_json):
 
         for i in partner_wait_list:
             if str(target_qq) == str(i.get("qq")):
-                cur_time =  datetime.datetime.utcnow()
+                cur_time =  datetime.datetime.now()
                 update_user_info(target_qq, {"partner": {"qq": from_qq, "date_time": cur_time, "name": from_name}})
                 update_user_info(from_qq, {"partner": {"qq": target_qq, "date_time": cur_time, "name": i['name']}})
                 mirai.send_group_message(form_group_id, f"【{from_name}】【{i['name']}】正式结为情缘！祝二位永结同心！", "TXT")
