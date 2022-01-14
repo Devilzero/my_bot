@@ -1,15 +1,8 @@
 import os
 
-from pymongo import MongoClient
-
 from utils import constant as con
 from utils.mirai_api import mirai
-
-
-mg_ip = os.getenv("mongdb_ip")
-mg_port = os.getenv("mongodb_port")
-mg_usr = os.getenv("mongodb_username")
-mg_pwd = os.getenv("mongodb_password")
+from utils.db_api import get_user_info, update_user_info
 
 
 con.MASTER = 100       # 主人
@@ -31,13 +24,9 @@ permission_level_dict = {
 
 def get_permission_level(qq, group_id=None):
     permission_level = con.MEMBER
-    client = MongoClient(
-        f'mongodb://{mg_ip}:{mg_port}/', username=mg_usr, password=mg_pwd)
-    with client:
-        db = client.my_bot
-        user_info = db.user_info.find_one({"_id": qq})
-        if user_info:
-            permission_level = user_info.get("permission_level", con.MEMBER)
+    user_info = get_user_info(qq)
+    if user_info:
+        permission_level = user_info.get("permission_level", con.MEMBER)
     if permission_level <= con.MEMBER and group_id:
         member_info = mirai.get_group_member_info(group_id, qq)
         if member_info:
@@ -47,9 +36,4 @@ def get_permission_level(qq, group_id=None):
 
 
 def set_permission_level(qq, permission_level=0):
-    client = MongoClient(
-        f'mongodb://{mg_ip}:{mg_port}/', username=mg_usr, password=mg_pwd)
-    with client:
-        db = client.my_bot
-        db.user_info.update_one(
-            {'_id': qq}, {'$set': {"permission_level": permission_level}}, True)
+    update_user_info(qq, {"permission_level": permission_level})

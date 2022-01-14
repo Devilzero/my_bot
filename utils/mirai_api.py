@@ -4,7 +4,6 @@ import requests
 from utils.log import log
 
 img_dir = os.path.realpath(__file__+"/../../data/img/")
-print(img_dir)
 
 
 class Mirai(object):
@@ -127,7 +126,6 @@ class Mirai(object):
             chain.append(temp)
         elif message_type == "IMG":
             img_path = os.path.join(img_dir, msg)
-            print(img_path)
             temp = {"type": "Image", "path": img_path}
             chain.append(temp)
         request_data = {
