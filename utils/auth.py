@@ -35,5 +35,5 @@ def get_permission_level(qq, group_id=None):
     return permission_level
 
 
-def set_permission_level(qq, permission_level=0):
-    update_user_info(qq, {"permission_level": permission_level})
+def set_permission_level(qq:int, permission_level=0):
+    update_user_info(int(qq), {"permission_level": int(permission_level)})

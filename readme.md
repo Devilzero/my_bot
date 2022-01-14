@@ -100,6 +100,9 @@ enabled=1
 
 bindIp: 172.0.0.1  改为 bindIp: 0.0.0.0
 
+security:
+  authorization: enabled
+
 启动
 
 `systemctl start mongod.service`

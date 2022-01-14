@@ -2,13 +2,14 @@ import os
 
 from utils.mirai_api import mirai
 from utils.db_api import set_group_switch, get_group_switch
-from utils.auth import get_permission_level, \
+from utils.auth import get_permission_level, set_permission_level,\
     permission_level_dict as pl
 
 
 group_switch_list = ["闭嘴", "说话"]
+set_master_list = ["设置主人"]
 
-cmd_head_list = [*group_switch_list]
+cmd_head_list = [*group_switch_list, *set_master_list]
 
 def mk_msg(data_json):
     from_qq = data_json['data']['sender']['id']
@@ -20,6 +21,15 @@ def mk_msg(data_json):
     if rev_list[0] in group_switch_list:
         group_switch(from_qq, form_group_id, rev_list[0])
 
+    elif rev_list[0] in set_master_list:
+        set_master(from_qq, form_group_id, rev_list[1])
+
+
+def set_master(qq, group_id, master_qq):
+    if str(qq) != os.getenv("founder"):
+        return
+    set_permission_level(int(master_qq), 100)
+    mirai.send_group_message(group_id, f"好了，{master_qq}成为我的新主人了！", ATQQ=qq)
 
 def group_switch(qq, group_id, action):
     switch = action=="说话"

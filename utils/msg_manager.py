@@ -9,6 +9,8 @@ plugins_dir = os.path.realpath(__file__+"/../../plugins/")
 sys.path.append(os.path.realpath(__file__+"/../../plugins/"))
 
 
+exception_list = ["说话", "设置主人"]
+
 # def dispatch_msg(msg, group_id="", qq="", name=""):
 def dispatch_msg(data_json, form_group_id):
     msg = data_json['data']['messageChain'][1]['text']
@@ -18,12 +20,13 @@ def dispatch_msg(data_json, form_group_id):
             plugin_name = i.split(".")[0]
             plugin = __import__(f"{plugin_name}")
             if rev_list[0] in plugin.cmd_head_list:
-                if msg == "说话" or get_group_switch(form_group_id):
+                if rev_list[0] in exception_list or get_group_switch(form_group_id):
                     return plugin.mk_msg(data_json)
 
 
 def msg_manager(message):
     data_json = json.loads(message)
+    print(data_json)
     if data_json['data']['type'] == 'GroupMessage':
         # 群聊
         if data_json['data']['messageChain'][1]['type'] == 'Plain':
