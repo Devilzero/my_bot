@@ -10,4 +10,4 @@ nohup python start.py &
 ps -ef|grep start.py|grep -v grep|awk '{print $2}'
 
 cp /root/my_bot/my_bot_start.sh /etc/cron.hourly/
-chmod +x /etc/cron.daily/my_bot_start.sh
+chmod +x /etc/cron.hourly/my_bot_start.sh
