@@ -3,6 +3,8 @@ import requests
 
 from pymongo import MongoClient
 from utils.mirai_api import mirai
+from utils.auth import get_permission_level, \
+    permission_level_dict as pl
 
 mg_ip = os.getenv("mongdb_ip")
 mg_port = os.getenv("mongodb_port")
@@ -27,7 +29,10 @@ def get_j3_info(api, data):
     if req.status_code == 200:
         return req.json()
 
-def bind_server(group_id, server):
+def bind_server(qq, group_id, server):
+    if get_permission_level(qq, group_id) < pl["ADMINISTRATOR"]:
+        mirai.send_group_message(group_id, "权限不足，叫你们老大出来，这个玩意至少要管理员才能改！", ATQQ=qq)
+        return
     client = MongoClient(f'mongodb://{mg_ip}:{mg_port}/', username=mg_usr, password=mg_pwd)
     with client:
         db = client.my_bot
@@ -99,6 +104,7 @@ macro_head_list = ["宏"]
 cmd_head_list = [*daily_head_list, *bind_head_list, *check_head_list, *macro_head_list]
 
 def mk_msg(data_json):
+    from_qq = data_json['data']['sender']['id']
     form_group_id = data_json['data']['sender']['group']['id']
     from_msg = data_json['data']['messageChain'][1]['text']
     rev_list = from_msg.split()
@@ -115,7 +121,7 @@ def mk_msg(data_json):
             mirai.send_group_message(form_group_id, "请输入区服\n例如：绑定区服 破阵子")
         else:
             server = rev_list[1]
-            bind_server(form_group_id, server)
+            bind_server(from_qq, form_group_id, server)
 
     if rev_list[0] in check_head_list:
         get_check(form_group_id)

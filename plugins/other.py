@@ -16,7 +16,7 @@ def mk_msg(data_json):
     if rev_list[0] in cmd_1:
         mirai.send_group_message(form_group_id, "emz/yellow.png", "IMG")
     elif rev_list[0] in cmd_head_list:
-        group_member_list = mirai.get_group_member_list(form_group_id)
+        group_member_list = mirai.get_group_member_info(form_group_id)
         usr = random.choice(group_member_list)
         msg_list = [
             f"【{from_name}】 跟 \n【{usr['memberName']}】 缘分到了，情个缘吧！",

@@ -179,12 +179,17 @@ class Mirai(object):
             log.error(f"链接异常: {res.text}")
         log.write_log(f"**-> [{target} - {QQ}]: {msg}", "UserMsg")
 
-    def get_group_member_list(self, target):
+    def get_group_member_info(self, target, member_id=None):
         """
-        获取群成员列表
+        获取某群(target)全部成员信息列表 或 某个成员(member_id)信息
         target: 群号
+        member_id: 指定成员QQ号
         """
-        url = self.url + f'/memberList?sessionKey={self.session}&target={target}'
+        if member_id:
+            url = self.url + f"/memberInfo?sessionKey={self.session}&target={target}&memberId={member_id}"
+        else:
+            url = self.url + f'/memberList?sessionKey={self.session}&target={target}'
+
         res = requests.get(url=url)
 
         try:
@@ -203,5 +208,8 @@ mirai_port = os.getenv("mirai_port")
 mirai = Mirai(qq, key, mirai_ip, mirai_port)
 
 if __name__ == "__main__":
-    print(mirai.session)
-    mirai.send_group_message(374664776, "hhhhh")
+
+    print(mirai.get_group_member_info(374664776, 747761541))
+    print(mirai.get_group_member_info(374664776, 3035155410))
+    print(mirai.get_group_member_info(374664776, 3256417648))
+    print(mirai.get_group_member_info(374664776, 1374184734))
