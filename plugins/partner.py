@@ -57,7 +57,7 @@ def mk_msg(data_json):
         # 查询双方是否已有情缘
         partner_info = get_user_info(from_qq, "partner")
         if partner_info:
-            mirai.send_group_message(form_group_id, f"赶紧管管【{from_name}】，都有情缘了还来求情缘？", "TXT", ATQQ=partner_info)
+            mirai.send_group_message(form_group_id, f"赶紧管管【{from_name}】，都有情缘了还来求情缘？", "TXT", ATQQ=partner_info["qq"])
             return
         target_partner_info = get_user_info(target_qq, "partner")
         if target_partner_info:
@@ -68,9 +68,9 @@ def mk_msg(data_json):
         partner_time = get_shafttime_axis(from_qq, "partner_time")
         if partner_time:
             wait_time = (datetime.datetime.utcnow() - partner_time).total_seconds()
-            if wait_time < 3600:
-                r_s = 3600 - wait_time
-                msg = f"一小时只能求一次情缘！{r_s} 秒后再来吧！"
+            if wait_time < 180:
+                r_s = 180 - wait_time
+                msg = f"3分钟只能求一次情缘！{r_s} 秒后再来吧！"
                 mirai.send_group_message(form_group_id, msg, "TXT", ATQQ=from_name)
                 return
         # 正式求情缘
