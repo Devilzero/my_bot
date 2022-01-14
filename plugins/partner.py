@@ -7,7 +7,7 @@ cmd_1 = ["黄图"]
 find_partner = ["找情缘", "帮我找情缘", "分配情缘"]
 qiu_partner = ["求情缘"]
 jieshou_partner = ["接受", "接受情缘"]
-partner_req_list = ["情缘申请列表"]
+partner_req_list = ["情缘申请列表", "我的鱼塘"]
 fuck_partner_list = ["死情缘"]
 my_partner_list = ["我的情缘", "遛情缘"]
 
@@ -54,6 +54,14 @@ def mk_msg(data_json):
             mirai.send_group_message(form_group_id, f"大家快来看啊！【{from_name}】要跟自己情缘了！", "TXT")
             return
 
+        # 是否重复申请
+        partner_wait_list = get_shafttime_axis(target_qq, "partner_wait")
+        if partner_wait_list:
+            for i in partner_wait_list:
+                if str(i["qq"]) == str(from_qq):
+                    mirai.send_group_message(form_group_id, "你都跟这位同学求过一次情缘了。成就成，不成就不成，这事强求不来。", "TXT")
+                    return
+
         # 查询双方是否已有情缘
         partner_info = get_user_info(from_qq, "partner")
         if partner_info:
@@ -73,7 +81,7 @@ def mk_msg(data_json):
                 mirai.send_group_message(form_group_id, f"3分钟只能求一次情缘！{int(r_s)} 秒后再来吧！", "TXT", ATQQ=from_qq)
                 return
         # 正式求情缘
-        mirai.send_group_message(form_group_id, f"【{from_name}】向你求情缘了，如果对方回复“接受情缘”并@【{from_name}】，你们就可以绑定情缘了！", "TXT", ATQQ=target_qq)
+        mirai.send_group_message(form_group_id, f"【{from_name}】向你求情缘了，如果回复“接受情缘”并@{from_name}，你们就可以绑定情缘了！", "TXT", ATQQ=target_qq)
         cur_time =  datetime.datetime.now()
         update_shafttime_axis(from_qq, {"partner_time": cur_time})
         # 加入请求列表
@@ -116,7 +124,7 @@ def mk_msg(data_json):
         if not partner_wait_list:
             mirai.send_group_message(form_group_id, "没有人跟你求情缘！", "TXT", ATQQ=from_qq)
             return
-        msg = f"【{from_name}】的情缘申请列表\n"
+        msg = f"【{from_name}】的{rev_list[0]}\n"
         msg += "\n".join([f"{i['name']}({i['qq']}) {i['date_time'].strftime('%Y-%m-%d %H:%M:%S')}" for i in partner_wait_list])
         mirai.send_group_message(form_group_id, msg, "TXT", ATQQ=from_qq)
 
