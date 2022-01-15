@@ -9,7 +9,7 @@ StandardError=journal
 ExecStart=/root/my_bot/start.py
 ExecReload=/bin/kill -HUP \$MAINPID
 Restart=on-failure
-RestartSec=3s
+RestartSec=60s
 
 [Install]
 WantedBy=multi-user.target
