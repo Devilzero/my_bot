@@ -9,6 +9,7 @@
     "mongdb_ip": "127.0.0.1",
     "mongodb_port": "27017",
     "mongodb_username": "admin",
-    "mongodb_password": "pwd"
+    "mongodb_password": "pwd",
 
+    "founder": "你的QQ"
 }

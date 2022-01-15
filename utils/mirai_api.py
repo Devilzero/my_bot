@@ -46,7 +46,7 @@ class Mirai(object):
             return 0
         else:
             raise SystemExit(
-                f"验证失败: <{json_data['code']}> {request_data['authKey']}")
+                f"验证失败: <{json_data['code']}> {json_data}")
 
     def bind(self):
         """
@@ -62,7 +62,7 @@ class Mirai(object):
         if json_data['code'] == 0:
             log.info(f'[{self.qq}] 绑定成功！')
         else:
-            raise SystemExit('QQ绑定失败！')
+            raise SystemExit(f"QQ绑定失败！: <{json_data['code']}> {json_data}")
 
     def release(self):
         """
