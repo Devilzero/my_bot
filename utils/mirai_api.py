@@ -198,6 +198,26 @@ class Mirai(object):
         except:
             log.error(f"链接异常: {res.text}")
 
+    def processing_of_group_applications(self, event_id, from_id, group_id, operate, message=""):
+        request_data = {
+            "sessionKey": self.session,
+            "eventId": event_id,
+            "fromId": from_id,
+            "groupId": group_id,
+            "operate": operate,
+            "message": message
+        }
+        url = self.url + '/resp/botInvitedJoinGroupRequestEvent'
+        res = requests.post(url=url, json=request_data)
+        try:
+            json_data = res.json()
+            if json_data['code'] != 0:
+                log.error(f"链接访问失败: [{url}] <{json_data['code']}>")
+        except:
+            log.error(f"链接异常: {res.text}")
+        log.write_log(f"+-> 加群成功 [{from_id} -> {group_id}]", group_id)
+
+
 
 qq = os.getenv("mirai_qq")
 key = os.getenv("mirai_key")

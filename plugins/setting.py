@@ -34,6 +34,7 @@ def set_master(qq, group_id, master_qq):
 def group_switch(qq, group_id, action):
     switch = action=="说话"
     if get_group_switch(group_id) == switch:
+        mirai.send_group_message(group_id, f"好的好的，在说了在说了。只要你说：“闭嘴”我就滚。")
         return
     if get_permission_level(qq, group_id) < pl["OWNER"]:
         if switch:
@@ -43,6 +44,6 @@ def group_switch(qq, group_id, action):
         return
     set_group_switch(group_id, switch)
     if switch:
-        mirai.send_group_message(group_id, "我来了我来了！")
+        mirai.send_group_message(group_id, "我来了我来了！让我“闭嘴”我也会老老实实的闭嘴。")
     else:
-        mirai.send_group_message(group_id, "那我就先闭嘴了，想让我继续说话的话那就跟我说句说话。\n而且我不会想你的，因为我只是个机器人。")
+        mirai.send_group_message(group_id, "那我就先闭嘴了，想让我继续说话的话那就跟我说句“说话”。\n而且我不会想你的，因为我只是个机器人。")

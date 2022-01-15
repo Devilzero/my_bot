@@ -56,3 +56,11 @@ def msg_manager(message):
             from_msg = data_json['data']['messageChain'][1]['text']
             log.info(f"<-** {from_group_name}({form_group_id}) - {from_name}({from_qq}): {from_msg}")
             mirai.send_temp_message(form_group_id, from_qq, "噶哈？")
+    elif data_json['data']['type'] == 'BotInvitedJoinGroupRequestEvent':
+        event_id = data_json['data']["eventId"]
+        from_id = data_json['data']["fromId"]
+        group_id = data_json['data']["groupId"]
+        nick = data_json['data']["nick"]
+        group_name = data_json['data']["groupName"]
+        log.info(f"+-> {nick}({from_id}) 邀请我进群: {group_name}({group_id})")
+        mirai.processing_of_group_applications(event_id, from_id, group_id, 0)

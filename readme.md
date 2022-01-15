@@ -3,7 +3,7 @@
 # 更新 yum 源
 yum -y update
 # 安装 git
-yum -y git
+yum install -y git
 # clone 项目代码
 cd /root/
 git clone https://github.com.cnpmjs.org/ermaozi/my_bot.git
@@ -27,7 +27,7 @@ systemctl enable docker
 docker run --rm -it --name="mirai" -v /root/mirai/config:/app/config ermaozi/mirai:latest
 ```
 
-第一次启动后退出，修改 mirai-api-http 配置文件
+第一次启动后 输入 exit 退出，修改 mirai-api-http 配置文件
 
 ``` shell
 vim /root/mirai/config/net.mamoe.mirai-api-http/setting.yml
@@ -94,24 +94,10 @@ docker run -d --name="mirai" -p 8088:8088 -v /root/mirai/config:/app/config erma
 
 下载并启动 mongodb
 
-``` shell
-docker run -itd --name="mongo" -p 27017:27017 mongo --auth
-```
-
-进入 mongodb 创建用户
+pwd 改成自己的
 
 ``` shell
-docker exec -it mongo /bin/bash
-# docker 的伪终端
-mongo
-```
-
-pwd 记得写自己的
-
-```
-> use admin
-> db.createUser({user:"admin",pwd:"pwd",roles:[{role:"root",db:"admin"}]})
-> exit
+docker run  --name="mongo"  -p27017:27017 -p28017:28017 -v /docker-data/mongo:/data/db -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=pwd  -d mongo
 ```
 
 配置远程访问, 如果不需要远程访问的话可以忽略这一步

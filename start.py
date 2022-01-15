@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import _thread as thread
 import time
 

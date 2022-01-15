@@ -25,6 +25,16 @@ def mk_msg(data_json):
         mirai.send_group_message(form_group_id, "emz/yellow.png", "IMG")
 
     elif rev_list[0] in find_partner:
+        find_partner_time = get_shafttime_axis(from_qq, "find_partner_time")
+        if find_partner_time:
+            wait_time = (datetime.datetime.now() - find_partner_time).total_seconds()
+            if wait_time < 180:
+                r_s = 3600 - wait_time
+                mirai.send_group_message(form_group_id, f"一小时只能找一次情缘！{int(r_s/60)} 分钟后再来吧！", "TXT", ATQQ=from_qq)
+                return
+
+        cur_time =  datetime.datetime.now()
+        update_shafttime_axis(from_qq, {"find_partner_time": cur_time})
         group_member_list = mirai.get_group_member_info(form_group_id)
         usr = random.choice(group_member_list)
         msg_list = [
@@ -37,7 +47,7 @@ def mk_msg(data_json):
             f"【{from_name}】跟\n【{usr['memberName']}】情缘了，不能反悔，谁反悔谁是小狗",
         ]
         msg = random.choice(msg_list)
-        mirai.send_group_message(form_group_id, msg, "TXT")
+        mirai.send_group_message(form_group_id, msg, "TXT", ATQQ=usr["id"])
     elif rev_list[0] in qiu_partner:
         at_list = []
         for i in data_json['data']['messageChain']:
