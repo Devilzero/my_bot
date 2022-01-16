@@ -121,16 +121,25 @@ def get_sand(group_id, server=""):
             f.write(img)
     mirai.send_group_message(group_id, f"sand/{img_name}", "IMG")
 
+def get_announce(group_id):
+    data = {
+        "limit": 1
+    }
+    req_json = __get_j3_info("announce", data)
+    announce = req_json["data"][0]
+    msg = f"剑网三 {announce['title']}\n{announce['url']}"
+    mirai.send_group_message(group_id, msg)
 
 daily_head_list = ["日常"]
 bind_head_list = ["绑定区服", "设置区服", "修改区服"]
 check_head_list = ["开服"]
 macro_head_list = ["宏"]
 sand_head_list = ["沙盘"]
+announce_head_list = ["维护公告", "系统公告", "更新公告", "官方公告"]
 
 cmd_head_list = [*daily_head_list, *bind_head_list,
                  *check_head_list, *macro_head_list,
-                 *sand_head_list]
+                 *sand_head_list, *announce_head_list]
 
 
 def mk_msg(data_json):
@@ -166,6 +175,8 @@ def mk_msg(data_json):
         else:
             server = rev_list[1]
         get_sand(form_group_id, server)
+    if rev_list[0] in announce_head_list:
+        get_announce(form_group_id)
 
 if __name__ == "__main__":
     api = "sand"
