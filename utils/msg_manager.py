@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import time
 from utils.mirai_api import mirai
 from utils.log import log
 from utils.db_api import set_group_switch
@@ -63,6 +64,8 @@ def msg_manager(message):
         nick = data_json['data']["nick"]
         group_name = data_json['data']["groupName"]
         log.info(f"+-> {nick}({from_id}) 邀请我进群: {group_name}({group_id})")
-        msg = "大家好！我是二猫子，是个努力干活还不粘人的机器人。\n发送“菜单”就可以查看我能干啥了。\n如果不想让我说话，可以让管理员跟我说“闭嘴”，这样我就会麻溜的滚蛋了。"
-        mirai.processing_of_group_applications(event_id, from_id, group_id, 0, msg)
+        mirai.processing_of_group_applications(event_id, from_id, group_id, 0)
         set_group_switch(group_id, True)
+        time.sleep(3)
+        msg = "大家好！我是二猫子，是个努力干活还不粘人的机器人。\n发送“菜单”就可以查看我能干啥了。\n如果不想让我说话，可以让管理员跟我说“闭嘴”，这样我就会麻溜的滚蛋了。"
+        mirai.send_group_message(group_id, msg)
