@@ -3,4 +3,5 @@ log/
 venv/
 __pycache__
 .vscode/
-data/img/sand/*.jpg
+data/img/sand/*
+data/img/demon/*

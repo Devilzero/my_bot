@@ -3,6 +3,7 @@ import datetime
 import requests
 
 from utils.mirai_api import mirai
+from utils.mk_img import create_svg
 from utils.db_api import get_group_conf, update_group_conf, update_j3_info, get_j3_info
 from utils.auth import get_permission_level, \
     permission_level_dict as pl
@@ -113,7 +114,10 @@ def get_sand(group_id, server=""):
     sand_url = req_json["data"][0]['url']
     today = datetime.date.today().strftime("%y%m%d")
     img_name = f"{server}-{today}.jpg"
-    img_path = os.path.join(img_dir, "sand", img_name)
+    sand_dir = os.path.join(img_dir, "sand")
+    img_path = os.path.join(sand_dir, img_name)
+    if not os.path.isdir(sand_dir):
+        os.makedirs(sand_dir)
     if not os.path.isfile(img_path):
         response = requests.get(sand_url)
         img = response.content
@@ -121,16 +125,60 @@ def get_sand(group_id, server=""):
             f.write(img)
     mirai.send_group_message(group_id, f"sand/{img_name}", "IMG")
 
+
 def get_require(group_id, qiyu):
     data = {
         "name": qiyu
     }
     req_json = __get_j3_info("require", data)
-    print(req_json)
     require = req_json["data"]
     maybe = require.get('maybe') if require.get('maybe') else '无'
     msg = f"【 {require['name']} 】\n\n[触发方式]  {require['means']}\n\n[前置条件]  {require['require']}\n\n[触发技巧]  {maybe}\n\n[奇遇奖励]  {require['reward']}\n\n更新时间 {require['time']}"
     mirai.send_group_message(group_id, msg)
+
+
+def get_demon(group_id, server):
+    if not server:
+        server = get_group_conf(group_id, "server")
+    if not server:
+        mirai.send_group_message(
+            group_id, "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子")
+        return
+    data = {
+        "server": server
+    }
+    today = datetime.date.today().strftime("%y%m%d")
+    img_name = f"{server}-{today}.jpg"
+    demon_dir = os.path.join(img_dir, "demon")
+    img_path = os.path.join(demon_dir, img_name)
+    if not os.path.isdir(demon_dir):
+        os.makedirs(demon_dir)
+    if not os.path.isfile(img_path):
+        req_json = __get_j3_info("demon", data)
+        demon_list = req_json.get("data", [])
+        key_list = [
+            "wanbaolou",
+            "tieba",
+            "dd373",
+            "uu898",
+            "5173",
+            "7881"
+        ]
+        datas = {}
+        for i in demon_list[::-1]:
+            for k, v in i.items():
+                if k in key_list:
+                    if k not in datas:
+                        datas[k] = {
+                            "date_list": [],
+                            "num_list": []
+                        }
+                    datas[k]["date_list"].append(datetime.datetime.fromtimestamp(i["time"]).strftime('%Y-%m-%d'))
+                    datas[k]["num_list"].append(float(i[k]))
+        create_svg("", datas, img_path)
+
+    mirai.send_group_message(group_id, f"demon/{img_name}", "IMG")
+
 
 def get_announce(group_id):
     data = {
@@ -148,11 +196,12 @@ macro_head_list = ["宏"]
 sand_head_list = ["沙盘"]
 announce_head_list = ["维护公告", "系统公告", "更新公告", "官方公告"]
 require_head_list = ["奇遇前置", "奇遇条件", "奇遇"]
+demon_head_list = ["金价", "金价查询"]
 
 cmd_head_list = [*daily_head_list, *bind_head_list,
                  *check_head_list, *macro_head_list,
                  *sand_head_list, *announce_head_list,
-                 *require_head_list]
+                 *require_head_list, *demon_head_list]
 
 
 def mk_msg(data_json):
@@ -191,6 +240,12 @@ def mk_msg(data_json):
         else:
             server = rev_list[1]
         get_sand(form_group_id, server)
+    if rev_list[0] in demon_head_list:
+        if len(rev_list) < 2:
+            server = ""
+        else:
+            server = rev_list[1]
+        get_demon(form_group_id, server)
 
     if rev_list[0] in announce_head_list:
         get_announce(form_group_id)
