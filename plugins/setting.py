@@ -8,8 +8,9 @@ from utils.auth import get_permission_level, set_permission_level,\
 
 group_switch_list = ["闭嘴", "说话"]
 set_master_list = ["设置主人"]
+menu_cmd = ["菜单", "功能", "你能干啥", "功能列表"]
 
-cmd_head_list = [*group_switch_list, *set_master_list]
+cmd_head_list = [*group_switch_list, *set_master_list, *menu_cmd]
 
 def mk_msg(data_json):
     from_qq = data_json['data']['sender']['id']
@@ -23,7 +24,31 @@ def mk_msg(data_json):
 
     elif rev_list[0] in set_master_list:
         set_master(from_qq, form_group_id, rev_list[1])
+    elif rev_list[0] in menu_cmd:
+        show_menu(form_group_id)
 
+
+def show_menu(group_id):
+    msg = """功能名称 | 相关命令
+
+日常查询
+  > 日常 / 日常 破阵子
+沙盘查询
+  > 沙盘 / 沙盘 破阵子
+分配情缘
+  > 分配情缘 / 找情缘
+绑定情缘
+  > 求情缘@QQ / 接受情缘@QQ
+情缘操作
+  > 情缘申请列表 / 死情缘 / 我的情缘
+发送黄图
+  > 黄图
+功能开关
+  > 说话 / 闭嘴
+其他查询
+  > 宏 毒经
+"""
+    mirai.send_group_message(group_id, msg)
 
 def set_master(qq, group_id, master_qq):
     if str(qq) != os.getenv("founder"):
