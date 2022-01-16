@@ -61,7 +61,7 @@ def group_switch(qq, group_id, action):
     if get_group_switch(group_id) == switch:
         mirai.send_group_message(group_id, f"好的好的，在说了在说了。只要你说：“闭嘴”我就滚。")
         return
-    if get_permission_level(qq, group_id) < pl["OWNER"]:
+    if get_permission_level(qq, group_id) < pl["ADMINISTRATOR"]:
         if switch:
             mirai.send_group_message(group_id, f"不听不听，王八念经。老大不让我说话，谁找我都不好使！", ATQQ=qq)
         else:
