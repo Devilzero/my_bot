@@ -98,5 +98,22 @@ def update_shafttime_axis(qq, data):
         db = client.my_bot
         db.shafttime_axis.update_one({'_id': qq}, {'$set':data}, True)
 
+def update_j3_info(key, data):
+    client = create_client()
+    with client:
+        db = client.my_bot
+        db.j3_info.update_one({'_id': key}, {'$set':data}, True)
+
+def get_j3_info(key, item=""):
+    client = create_client()
+    with client:
+        db = client.my_bot
+        j3_info = db.j3_info.find_one({'_id': key})
+    if not j3_info:
+        return None
+    if item:
+        return j3_info.get(item)
+    return j3_info
+
 if __name__ == "__main__":
     print(get_group_switch(129903168))
