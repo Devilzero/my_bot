@@ -148,7 +148,7 @@ def get_demon(group_id, server):
         "server": server
     }
     today = datetime.date.today().strftime("%y%m%d")
-    img_name = f"{server}-{today}.jpg"
+    img_name = f"{server}-{today}.png"
     demon_dir = os.path.join(img_dir, "demon")
     img_path = os.path.join(demon_dir, img_name)
     if not os.path.isdir(demon_dir):
