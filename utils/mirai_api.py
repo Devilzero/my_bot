@@ -3,7 +3,8 @@ import requests
 
 from utils.log import log
 
-img_dir = os.path.realpath(__file__+"/../../data/img/")
+# img_dir = os.path.realpath(__file__+"/../../data/img/")
+img_dir = "data/img/"
 
 
 class Mirai(object):
@@ -139,7 +140,7 @@ class Mirai(object):
         try:
             json_data = res.json()
             if json_data['code'] != 0:
-                log.error(f"链接访问失败: [{url}] <{json_data['code']}>")
+                log.error(f"链接访问失败: [{url}] {json_data}")
         except:
             log.error(f"链接异常: {res.text}")
         log.write_log(f"-> [{target}]: {msg}", target)

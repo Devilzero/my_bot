@@ -24,7 +24,7 @@ systemctl enable docker
 ## Mirai 安装、配置、启动
 ``` shell
 # 下载并第一次启动 mirai
-docker run --rm -it --name="mirai" -v /root/mirai/config:/app/config ermaozi/mirai:latest
+docker run --rm -it --name="mirai" -v /root/mirai/config:/app/config -v /root/my_bot/data/img:/app/data/img ermaozi/mirai:latest
 ```
 
 第一次启动后 输入 exit 退出，修改 mirai-api-http 配置文件
@@ -81,13 +81,13 @@ adapterSettings:
 完成后再次启动, 此时需要设置自动登陆, 因为很麻烦, 所以后面再做补充
 
 ``` shell
-docker run --rm -it --name="mirai" -p 8088:8088 -v /root/mirai/config:/app/config ermaozi/mirai:latest
+docker run --rm -it --name="mirai" -p 8088:8088 -v /root/mirai/config:/app/config -v /root/my_bot/data/img:/app/data/img ermaozi/mirai:latest
 ```
 
 然后在后台启动就 OK 了
 
 ``` shell
-docker run -d --name="mirai" -p 8088:8088 -v /root/mirai/config:/app/config ermaozi/mirai:latest
+docker run -d --name="mirai" -p 8088:8088 -v /root/mirai/config:/app/config -v /root/my_bot/data/img:/app/data/img ermaozi/mirai:latest
 ```
 
 ## mongodb 安装、配置、启动

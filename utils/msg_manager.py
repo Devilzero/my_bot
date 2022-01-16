@@ -26,7 +26,6 @@ def dispatch_msg(data_json, form_group_id):
 
 def msg_manager(message):
     data_json = json.loads(message)
-    print(data_json)
     if data_json['data']['type'] == 'GroupMessage':
         # 群聊
         if data_json['data']['messageChain'][1]['type'] == 'Plain':
