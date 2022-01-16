@@ -9,6 +9,7 @@ cd /root/
 git clone https://github.com.cnpmjs.org/ermaozi/my_bot.git
 # 安装 python 依赖
 yum -y install python3-devel
+yum -y install libtiff-devel libjpeg-devel libzip-devel freetype-devel lcms2-devel libwebp-devel tcl-devel tk-devel
 # 安装 docker 依赖
 yum install -y yum-utils device-mapper-persistent-data lvm2
 # 修改 docker yum 源

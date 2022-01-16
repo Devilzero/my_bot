@@ -2,3 +2,4 @@ pymongo==4.0.1
 requests==2.27.1
 websocket_client==1.2.3
 psutil==5.9.0
+matplotlib==3.5.1
