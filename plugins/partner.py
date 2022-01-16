@@ -38,13 +38,13 @@ def mk_msg(data_json):
         group_member_list = mirai.get_group_member_info(form_group_id)
         usr = random.choice(group_member_list)
         msg_list = [
-            f"【{from_name}】 跟 \n【{usr['memberName']}】 缘分到了，情个缘吧！",
+            f"【{from_name}】 对你有意思，你们情缘吧！",
             f"组织给【{from_name}】分配的情缘是\n【{usr['memberName']}】了，你们好好相处吧。",
-            f"【{from_name}】跟\n【{usr['memberName']}】还挺有夫妻相，你俩私下聊聊吧。",
-            f"祝【{from_name}】跟\n【{usr['memberName']}】永结同心！",
-            f"祝【{from_name}】跟\n【{usr['memberName']}】早生贵子！",
+            f"跟【{from_name}】还挺有夫妻相，你俩私下聊聊吧。",
             f"组织给【{from_name}】分配了情缘\n【{usr['memberName']}】",
-            f"【{from_name}】跟\n【{usr['memberName']}】情缘了，不能反悔，谁反悔谁是小狗",
+            f"跟【{from_name}】情缘了，不能反悔，谁反悔谁是小狗",
+            f"快来看看你的新情缘【{from_name}】",
+            f"如果觉得【{from_name}】还不错，可以发送“求情缘@{from_name}”，你们就能情缘了！"
         ]
         msg = random.choice(msg_list)
         mirai.send_group_message(form_group_id, msg, "TXT", ATQQ=usr["id"])
