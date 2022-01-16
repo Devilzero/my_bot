@@ -113,8 +113,8 @@ def get_sand(group_id, server=""):
     req_json = __get_j3_info("sand", data)
     sand_url = req_json["data"][0]['url']
     today = datetime.date.today().strftime("%y%m%d")
-    img_name = f"{server}-{today}.jpg"
-    sand_dir = os.path.join(img_dir, "sand")
+    img_name = f"{server}.jpg"
+    sand_dir = os.path.join(img_dir, "sand", today)
     img_path = os.path.join(sand_dir, img_name)
     if not os.path.isdir(sand_dir):
         os.makedirs(sand_dir)
@@ -123,7 +123,7 @@ def get_sand(group_id, server=""):
         img = response.content
         with open( img_path,'wb' ) as f:
             f.write(img)
-    mirai.send_group_message(group_id, f"sand/{img_name}", "IMG")
+    mirai.send_group_message(group_id, f"sand/{today}/{img_name}", "IMG")
 
 
 def get_require(group_id, qiyu):
@@ -148,8 +148,8 @@ def get_demon(group_id, server):
         "server": server
     }
     today = datetime.date.today().strftime("%y%m%d")
-    img_name = f"{server}-{today}.png"
-    demon_dir = os.path.join(img_dir, "demon")
+    img_name = f"{server}.png"
+    demon_dir = os.path.join(img_dir, "demon", today)
     img_path = os.path.join(demon_dir, img_name)
     if not os.path.isdir(demon_dir):
         os.makedirs(demon_dir)
@@ -166,7 +166,7 @@ def get_demon(group_id, server):
         ]
         datas = {}
         for i in demon_list[::-1]:
-            for k, v in i.items():
+            for k in i:
                 if k in key_list:
                     if k not in datas:
                         datas[k] = {
@@ -177,7 +177,7 @@ def get_demon(group_id, server):
                     datas[k]["num_list"].append(float(i[k]))
         create_svg("", datas, img_path)
 
-    mirai.send_group_message(group_id, f"demon/{img_name}", "IMG")
+    mirai.send_group_message(group_id, f"demon/{today}/{img_name}", "IMG")
 
 
 def get_announce(group_id):
