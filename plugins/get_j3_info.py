@@ -121,6 +121,17 @@ def get_sand(group_id, server=""):
             f.write(img)
     mirai.send_group_message(group_id, f"sand/{img_name}", "IMG")
 
+def get_require(group_id, qiyu):
+    data = {
+        "name": qiyu
+    }
+    req_json = __get_j3_info("require", data)
+    print(req_json)
+    require = req_json["data"]
+    maybe = require.get('maybe') if require.get('maybe') else '无'
+    msg = f"【 {require['name']} 】\n\n[触发方式]  {require['means']}\n\n[前置条件]  {require['require']}\n\n[触发技巧]  {maybe}\n\n[奇遇奖励]  {require['reward']}\n\n更新时间 {require['time']}"
+    mirai.send_group_message(group_id, msg)
+
 def get_announce(group_id):
     data = {
         "limit": 1
@@ -136,10 +147,12 @@ check_head_list = ["开服"]
 macro_head_list = ["宏"]
 sand_head_list = ["沙盘"]
 announce_head_list = ["维护公告", "系统公告", "更新公告", "官方公告"]
+require_head_list = ["奇遇前置", "奇遇条件", "奇遇"]
 
 cmd_head_list = [*daily_head_list, *bind_head_list,
                  *check_head_list, *macro_head_list,
-                 *sand_head_list, *announce_head_list]
+                 *sand_head_list, *announce_head_list,
+                 *require_head_list]
 
 
 def mk_msg(data_json):
@@ -166,6 +179,9 @@ def mk_msg(data_json):
         get_check(form_group_id)
 
     if rev_list[0] in macro_head_list:
+        if len(rev_list) < 2:
+            mirai.send_group_message(form_group_id, "请输入心法全称\n例如：宏 冰心诀")
+            return
         xinfa = rev_list[1]
         get_macro(form_group_id, xinfa)
 
@@ -175,8 +191,16 @@ def mk_msg(data_json):
         else:
             server = rev_list[1]
         get_sand(form_group_id, server)
+
     if rev_list[0] in announce_head_list:
         get_announce(form_group_id)
+
+    if rev_list[0] in require_head_list:
+        if len(rev_list) < 2:
+            mirai.send_group_message(form_group_id, "请输入奇遇全称\n例如：奇遇 黑白路")
+            return
+        qiyu = rev_list[1]
+        get_require(form_group_id, qiyu)
 
 if __name__ == "__main__":
     api = "sand"
