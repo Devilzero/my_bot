@@ -186,8 +186,8 @@ class Mirai(object):
         """
         if member_id:
             url = self.url + f"/memberInfo?sessionKey={self.session}&target={target}&memberId={member_id}"
-        else:
-            url = self.url + f'/memberList?sessionKey={self.session}&target={target}'
+            return requests.get(url=url).json()
+        url = self.url + f'/memberList?sessionKey={self.session}&target={target}'
 
         res = requests.get(url=url)
 
