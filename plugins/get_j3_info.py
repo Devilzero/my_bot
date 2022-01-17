@@ -229,7 +229,7 @@ def mk_msg(data_json):
             server = ""
         else:
             server = rev_list[1]
-        get_check(form_group_id)
+        get_check(form_group_id, server)
 
     if rev_list[0] in macro_head_list:
         if len(rev_list) < 2:
