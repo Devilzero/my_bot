@@ -225,6 +225,10 @@ def mk_msg(data_json):
             bind_server(from_qq, form_group_id, server)
 
     if rev_list[0] in check_head_list:
+        if len(rev_list) < 2:
+            server = ""
+        else:
+            server = rev_list[1]
         get_check(form_group_id)
 
     if rev_list[0] in macro_head_list:
