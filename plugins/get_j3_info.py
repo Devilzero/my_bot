@@ -59,7 +59,7 @@ def get_daily(group_id, server=""):
         for k, v in req_json.items():
             if k in label_dict:
                 msg += f"{label_dict[k]}: {v}\n"
-        update_j3_info(today, {server: msg})
+        update_j3_info(req_json['date'], {server: msg})
 
     mirai.send_group_message(group_id, msg)
 
