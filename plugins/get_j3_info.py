@@ -38,7 +38,7 @@ def get_daily(group_id, server=""):
         mirai.send_group_message(
             group_id, "请绑定区服\n例如：\n绑定区服 破阵子\n\n或是输入要查询的区服\n例如：日常 破阵子")
         return
-    today = datetime.date.today().strftime("%y%m%d")
+    today = datetime.date.today().strftime("%Y-%m-%d")
     msg = get_j3_info(today, server)
     if not msg:
         data = {
@@ -59,7 +59,8 @@ def get_daily(group_id, server=""):
         for k, v in req_json.items():
             if k in label_dict:
                 msg += f"{label_dict[k]}: {v}\n"
-        update_j3_info(req_json['date'], {server: msg})
+        if today == req_json['date']:
+            update_j3_info(req_json['date'], {server: msg})
 
     mirai.send_group_message(group_id, msg)
 
